@@ -7,7 +7,7 @@ const seedDatabase = require('../seed')
 const connectdb = () =>{
   mongoose
   .connect(
-    "mongodb+srv://suraj189:nn65mQ5ZsZQdcN7e@cluster0.yzo78l4.mongodb.net/data",
+    process.env.mongodb_uri,
     {
       useNewUrlParser: true,
     }

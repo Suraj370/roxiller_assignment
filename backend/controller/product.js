@@ -3,7 +3,6 @@ const formatPieChartData = require("../helper/helper");
 
 const transaction = async (req, res) => {
   const { search } = req.query;
-  console.log(req.query);
   let month = Number(req.query.month); // Convert to number, default to 3 if not provided or invalid
   let page = Number(req.query.page) || 1; // Convert to number, default to 1 if not provided or invalid
   let limit = Number(req.query.limit) || 10; // Convert to number, default to 10 if not provided or invalid
@@ -17,6 +16,7 @@ const transaction = async (req, res) => {
     }
 
     if (search) {
+      console.log('I am here');
       matchStage.$text = { $search: search };
     }
 
