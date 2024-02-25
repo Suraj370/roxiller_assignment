@@ -11,9 +11,8 @@ async function seedDatabase() {
       const data = response.data;
       await Product.insertMany(data);
       console.log("Database seeded successfully");
-    }
-    else{
-        console.log('Database already contains data. No seeding required');
+    } else {
+      console.log("Database already contains data. No seeding required");
     }
   } catch (error) {
     console.error("Error database seeding", error);

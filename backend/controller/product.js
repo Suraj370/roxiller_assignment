@@ -2,11 +2,12 @@ const Product = require("../models/product");
 const formatPieChartData = require("../helper/helper");
 
 const transaction = async (req, res) => {
-  const { search } = req.query;
-  let month = Number(req.query.month); // Convert to number, default to 3 if not provided or invalid
+  const search = req.query.search;
+  let month = Number(req.query.month) || 3 ; // Convert to number, default to 3 if not provided or invalid
   let page = Number(req.query.page) || 1; // Convert to number, default to 1 if not provided or invalid
   let limit = Number(req.query.limit) || 10; // Convert to number, default to 10 if not provided or invalid
   let skip = (page - 1) * limit;
+  // console.log('month',search);
 
   try {
     const matchStage = {};
@@ -16,24 +17,29 @@ const transaction = async (req, res) => {
     }
 
     if (search) {
-      console.log('I am here');
       matchStage.$text = { $search: search };
     }
-
-    console.log(matchStage);
     const transactions = await Product.aggregate([
       {
-        $match: matchStage
+        $match: matchStage,
       },
-
-      { $skip: skip },
-      { $limit: limit },
+     
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
+      },
     ]);
+
+    const totalResults = await Product.countDocuments();
 
     res.json({
       transaction: {
-        page,
-        month,
+        pageInfo: {
+          totalResults: totalResults,
+          resultsPerPage: limit,
+        },
         data: transactions,
       },
     });
@@ -44,7 +50,7 @@ const transaction = async (req, res) => {
 };
 
 const statistics = async (req, res) => {
-  let month = Number(req.query.month);
+  let month = Number(req.query.month) || 3;
   try {
     const stats = await Product.aggregate([
       {
@@ -73,7 +79,7 @@ const statistics = async (req, res) => {
 };
 
 const barchart = async (req, res) => {
-  let month = Number(req.query.month);
+  let month = Number(req.query.month) || 3;
   try {
     const pricerangebuckets = [
       { min: 0, max: 100 },
@@ -139,7 +145,7 @@ const barchart = async (req, res) => {
 };
 
 const piechart = async (req, res) => {
-  let month = Number(req.query.month);
+  let month = Number(req.query.month) || 3;
   try {
     const pieChartData = await Product.aggregate([
       {
